@@ -1,0 +1,44 @@
+version: !!str 3
+
+services:
+  authz:
+    image: authz:latest
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - 8080:8080
+    labels:
+      - app.docker.io/name=authz
+      - app.docker.io/env=production
+      - app.docker.io/part-of=authz
+      - app.docker.io/created-by=nimatbt  
+    networks:
+      - edge
+      - database  
+    depends_on:
+      - mysql
+    
+      
+  mysql:
+    image: mysql:8
+    restart: unless-stopped
+    env_file: .env
+    labels:
+      - app.docker.io/name=mysql
+      - app.docker.io/env=production
+      - app.docker.io/part-of=authz
+      - app.docker.io/created-by=nimatbt
+    networks:
+      - database
+    volumes:
+      - mysql_data:/var/lib/mysql
+      
+volumes:
+  mysql_data:
+  
+networks:
+  edge:
+  database:
+    internal: true
+  
+  
